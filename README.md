@@ -1,4 +1,4 @@
-# Crzgames - Cluster K3S - High Availability 
+# Flapi - Cluster K3s - High Availability 
 
 ## 🛠 Tech Stack
 
