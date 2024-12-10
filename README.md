@@ -5,7 +5,7 @@
 - **Ansible**: Automatise le déploiement des noeud master / worker sur les serveurs.
 - **CI/CD (GitHub Actions)**: Automatise le processus de test et de déploiement, rendant le lancement de nouvelles versions plus rapide et plus fiable.
 
-<br /><br />
+<br /><br /><br /><br />
 
 
 ## 📚 Documentation 
@@ -29,7 +29,7 @@ curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable traefik -
 - `--node-taint CriticalAddonsOnly=true:NoExecute` : Applique un taint au nœud serveur, ce qui empêche les pods qui n'ont pas de tolérance correspondante d'être planifiés sur ce nœud. Ce taint est souvent utilisé pour s'assurer que seuls les pods critiques pour le fonctionnement du cluster soient exécutés sur les nœuds serveur, aidant à garder ces nœuds stables et sécurisés.
 - `--tls-san cluster-k3s.crzcommon.com` : Ajoute un Subject Alternative Name (SAN) au certificat TLS généré pour l'API server de Kubernetes. Cela permet d'accéder en toute sécurité à l'API server via le nom de domaine spécifié (cluster-k3s.crzcommon.com dans cet exemple), en plus de son adresse IP. C'est crucial pour les environnements où vous accédez à l'API server de Kubernetes à travers un réseau ou Internet.
 
-<br />
+<br /><br />
 
 ### Joindre de Nouveaux Nœuds au Cluster K3s
 
@@ -97,10 +97,9 @@ See "systemctl status k3s.service" and "journalctl -xeu k3s.service" for details
 - **Désactiver le parefeu (Ubuntu/Debian)** : `ufw disable`
 - **Mettre à jour le système**: `sudo apt update && sudo apt upgrade -y`
 
-<br /><br /><br /><br />
+<br /><br />
 
-
-## Mise à jour de la version Kubernetes sur les noeuds
+### Mise à jour de la version Kubernetes sur les noeuds
 1. Se connecter sur un noeud.
 2. Run command : 
 ```bash
@@ -111,8 +110,7 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=stable sh -
 sudo kubectl get node -o wide
 ```
 
-<br /><br /><br /><br />
-
+<br /><br />
 
 ### Haute Disponibilité du Cluster K3s
 
@@ -121,8 +119,7 @@ sudo kubectl get node -o wide
 - Facultatif : zéro ou plusieurs nœuds d'agent désignés pour exécuter vos applications et services
 - Facultatif : une adresse d'enregistrement fixe (load balancer) pour que les nœuds d'agent / worker s'inscrivent auprès du cluster (Voir le projet : https://github.com/CrzGames/Crzgames_LoadBalancer_External)
 
-<br /><br /><br /><br />
-
+<br /><br />
 
 ### Get KUBECONFIG :
 1. Connect to the NODE MASTER in the Cluster K3S.
@@ -136,8 +133,7 @@ sudo cat /etc/rancher/k3s/k3s.yaml
 sudo base64 /etc/rancher/k3s/k3s.yaml > k3s_base64.txt 
 ```
 
-<br /><br /><br /><br />
-
+<br /><br />
 
 ## Sauvegarde et Restauration du Cluster K3s
 ### Par défault
