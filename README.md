@@ -191,18 +191,14 @@ sudo systemctl start k3s
 
 
 ## 🚀 Production
-
 ### ⚙️➡️ Processus de distribution automatique (CI / CD)
-
-Pour intégrer un nouveau projet dans notre pipeline CI/CD, suivez les étapes ci-dessous. Cela permettra de configurer une distribution automatique sécurisée et efficace vers vos environnements de production ou de test.
-
 #### Configuration Initiale pour un Nouveau Projet
 
 1. **Créer le Cluster K3S**: Il faudra au préalable avoir crée manuellement le cluster K3S, voir tout en haut du fichier 'README.md' pour plus de détails.
 
 2. **Configuration des secrets GitHub**:
 
-   Les secrets GitHub permettent de stocker et d'utiliser des données sensibles dans votre workflow de CI/CD de manière sécurisée. Pour la configuration initiale, assurez-vous d'ajouter les secrets suivants dans votre dépôt GitHub :
+   Pour la configuration initiale, assurez-vous d'ajouter les secrets suivants dans votre dépôt GitHub :
 
    - `CLUSTER_SSH_PRIVATE_KEY`: Votre clé privée SSH. Cette clé doit correspondre à la clé publique déjà installée sur les serveurs cibles.
    - `CLUSTER_SSH_HOSTS`: Les adresses IP des serveurs cibles, séparées par des espaces. <br />
