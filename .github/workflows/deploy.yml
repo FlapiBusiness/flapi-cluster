@@ -26,9 +26,9 @@ jobs:
       - name: Setup SSH Key and known_hosts
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.CLUSTER_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOSTS }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.CLUSTER_SSH_HOSTS }} >> ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook
         # Pour passer une variable d'environnement de Github Actions à Ansible, on utilise l'option --extra-vars
