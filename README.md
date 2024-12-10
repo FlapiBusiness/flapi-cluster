@@ -1,19 +1,21 @@
-# Crzgames - Cluster K3S - High Availability 
+# Flapi - Cluster K3s - High Availability 
 
 ## 🛠 Tech Stack
 
 - **Ansible**: Automatise le déploiement des noeud master / worker sur les serveurs.
 - **CI/CD (GitHub Actions)**: Automatise le processus de test et de déploiement, rendant le lancement de nouvelles versions plus rapide et plus fiable.
 
-<br /><br />
+<br /><br /><br /><br />
 
 
-## Création du Cluster K3s
+## 📚 Documentation 
 
-### 1. Connexion au VPS / Serveur Dédié
+### Création du Cluster K3s
+
+#### 1. Connexion au VPS / Serveur Dédié
 Connectez-vous à votre serveur qui servira de premier nœud master dans votre cluster K3s.
 
-### 2. Création et Initialisation du Premier Nœud Master
+#### 2. Création et Initialisation du Premier Nœud Master
 1. Exécutez la commande suivante pour initialiser le cluster K3s et créer le premier nœud master :
 ```bash
 curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable traefik --node-taint CriticalAddonsOnly=true:NoExecute --tls-san cluster-k3s.crzcommon.com
@@ -26,80 +28,8 @@ curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable traefik -
 - `--disable traefik` : Désactive l'installation automatique de Traefik, qui est l'ingress controller par défaut inclus avec K3s. Vous pouvez choisir de désactiver Traefik si vous prévoyez d'utiliser un autre ingress controller ou si vous n'avez pas besoin de cette fonctionnalité.
 - `--node-taint CriticalAddonsOnly=true:NoExecute` : Applique un taint au nœud serveur, ce qui empêche les pods qui n'ont pas de tolérance correspondante d'être planifiés sur ce nœud. Ce taint est souvent utilisé pour s'assurer que seuls les pods critiques pour le fonctionnement du cluster soient exécutés sur les nœuds serveur, aidant à garder ces nœuds stables et sécurisés.
 - `--tls-san cluster-k3s.crzcommon.com` : Ajoute un Subject Alternative Name (SAN) au certificat TLS généré pour l'API server de Kubernetes. Cela permet d'accéder en toute sécurité à l'API server via le nom de domaine spécifié (cluster-k3s.crzcommon.com dans cet exemple), en plus de son adresse IP. C'est crucial pour les environnements où vous accédez à l'API server de Kubernetes à travers un réseau ou Internet.
-  
-<br /><br /><br /><br />
 
-
-## Mise à jour de la version Kubernetes sur les noeuds
-1. Se connecter sur un noeud.
-2. Run command : 
-```bash
-curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=stable sh -
-```
-3. Check si la monté de version c'est bien fait :
-```bash
-sudo kubectl get node -o wide
-```
-
-<br /><br /><br /><br />
-
-
-## Sauvegarde et Restauration du Cluster K3s
-### Par défault
-- K3s crée des `snapshots etcd automatiques`.
-- K3s crée les snapshots etcd automatique à `00h00` et `12h00`
-- K3s `conserve` les `5 derniers snapshots`.
-- K3s conserve les snapshots dans : `/var/lib/rancher/k3s/server/db/snapshots`.
-- Lorsque K3s est restauré à partir d'une sauvegarde, l'ancien répertoire de données (`/var/lib/rancher/k3s/server/db/snapshots`) est déplacé vers `/var/lib/rancher/k3s/server/db/etcd-old/`. K3s tente ensuite de restaurer l'instantané en créant un nouveau répertoire de données, puis en démarrant etcd avec un nouveau cluster K3s avec un membre etcd.
-
-### Configurer le nombre de snapshots conservés (à faire sur chaque noeud master)
-```bash
-# Ajoutez l'option '--etcd-snapshot-retention=10' à la ligne ExecStart :
-sudo nano /etc/systemd/system/k3s.service
-# Recharger le daemon systemd pour appliquer les modifications :
-sudo systemctl daemon-reload
-# Arreter et démarrer à nouveau K3s :
-sudo systemctl stop k3s
-sudo systemctl start k3s
-```
-
-### Création d'un Snapshot etcd Manuel
-```bash
-sudo k3s etcd-snapshot save
-# save is : /var/lib/rancher/k3s/server/db/snapshots
-```
-
-### Liste des Snapshots
-```bash
-sudo k3s etcd-snapshot ls
-```
-
-### Restaurer un Cluster K3s
-1. Sur le premier nœud (Server1), arrêter et démarrer K3s avec les options de réinitialisation du cluster :
-```bash
-sudo systemctl stop k3s
-sudo k3s server \
-  --cluster-reset \
-  --cluster-reset-restore-path=/var/lib/rancher/k3s/server/db/snapshots/mysnapshot
-```
-2. Sur les autres nœuds (Server2, Server3), arrêtez K3s et supprimez le répertoire de données :
-```bash
-sudo systemctl stop k3s
-sudo rm -rf /var/lib/rancher/k3s/server/db/
-```
-3. Sur le premier nœud (Sever1), redémarrez K3s :
-```bash
-sudo systemctl start k3s
-```
-4. Sur les autres nœuds (Server2, Server3), redémarrez K3s pour rejoindre le cluster restauré :
-```bash
-sudo systemctl start k3s
-```
-
-<br /><br /><br /><br />
-
-
-## 📚 Documentation 
+<br /><br />
 
 ### Joindre de Nouveaux Nœuds au Cluster K3s
 
@@ -166,8 +96,21 @@ See "systemctl status k3s.service" and "journalctl -xeu k3s.service" for details
 - **Utiliser des Disques SSD pour les Nœuds Master** : Recommandé pour de meilleures performances et une latence réduite.
 - **Désactiver le parefeu (Ubuntu/Debian)** : `ufw disable`
 - **Mettre à jour le système**: `sudo apt update && sudo apt upgrade -y`
-  
-<br />
+
+<br /><br />
+
+### Mise à jour de la version Kubernetes sur les noeuds
+1. Se connecter sur un noeud.
+2. Run command : 
+```bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=stable sh -
+```
+3. Check si la monté de version c'est bien fait :
+```bash
+sudo kubectl get node -o wide
+```
+
+<br /><br />
 
 ### Haute Disponibilité du Cluster K3s
 
@@ -176,7 +119,7 @@ See "systemctl status k3s.service" and "journalctl -xeu k3s.service" for details
 - Facultatif : zéro ou plusieurs nœuds d'agent désignés pour exécuter vos applications et services
 - Facultatif : une adresse d'enregistrement fixe (load balancer) pour que les nœuds d'agent / worker s'inscrivent auprès du cluster (Voir le projet : https://github.com/CrzGames/Crzgames_LoadBalancer_External)
 
-<br />
+<br /><br />
 
 ### Get KUBECONFIG :
 1. Connect to the NODE MASTER in the Cluster K3S.
@@ -188,6 +131,60 @@ sudo cat /etc/rancher/k3s/k3s.yaml
 4. Encode BASE64 and add in SECRETS VARIABLE for CI / CD, run command :
 ```bash
 sudo base64 /etc/rancher/k3s/k3s.yaml > k3s_base64.txt 
+```
+
+<br /><br />
+
+## Sauvegarde et Restauration du Cluster K3s
+### Par défault
+- K3s crée des `snapshots etcd automatiques`.
+- K3s crée les snapshots etcd automatique à `00h00` et `12h00`
+- K3s `conserve` les `5 derniers snapshots`.
+- K3s conserve les snapshots dans : `/var/lib/rancher/k3s/server/db/snapshots`.
+- Lorsque K3s est restauré à partir d'une sauvegarde, l'ancien répertoire de données (`/var/lib/rancher/k3s/server/db/snapshots`) est déplacé vers `/var/lib/rancher/k3s/server/db/etcd-old/`. K3s tente ensuite de restaurer l'instantané en créant un nouveau répertoire de données, puis en démarrant etcd avec un nouveau cluster K3s avec un membre etcd.
+
+### Configurer le nombre de snapshots conservés (à faire sur chaque noeud master)
+```bash
+# Ajoutez l'option '--etcd-snapshot-retention=10' à la ligne ExecStart :
+sudo nano /etc/systemd/system/k3s.service
+# Recharger le daemon systemd pour appliquer les modifications :
+sudo systemctl daemon-reload
+# Arreter et démarrer à nouveau K3s :
+sudo systemctl stop k3s
+sudo systemctl start k3s
+```
+
+### Création d'un Snapshot etcd Manuel
+```bash
+sudo k3s etcd-snapshot save
+# save is : /var/lib/rancher/k3s/server/db/snapshots
+```
+
+### Liste des Snapshots
+```bash
+sudo k3s etcd-snapshot ls
+```
+
+### Restaurer un Cluster K3s
+1. Sur le premier nœud (Server1), arrêter et démarrer K3s avec les options de réinitialisation du cluster :
+```bash
+sudo systemctl stop k3s
+sudo k3s server \
+  --cluster-reset \
+  --cluster-reset-restore-path=/var/lib/rancher/k3s/server/db/snapshots/mysnapshot
+```
+2. Sur les autres nœuds (Server2, Server3), arrêtez K3s et supprimez le répertoire de données :
+```bash
+sudo systemctl stop k3s
+sudo rm -rf /var/lib/rancher/k3s/server/db/
+```
+3. Sur le premier nœud (Sever1), redémarrez K3s :
+```bash
+sudo systemctl start k3s
+```
+4. Sur les autres nœuds (Server2, Server3), redémarrez K3s pour rejoindre le cluster restauré :
+```bash
+sudo systemctl start k3s
 ```
 
 <br /><br /><br /><br />
