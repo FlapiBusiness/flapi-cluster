@@ -97,29 +97,6 @@ See "systemctl status k3s.service" and "journalctl -xeu k3s.service" for details
 - **Utiliser des Disques SSD pour les Nœuds Master** : Recommandé pour de meilleures performances et une latence réduite.
 - **Désactiver le parefeu (Ubuntu/Debian)** : `ufw disable`
 - **Mettre à jour le système**: `sudo apt update && sudo apt upgrade -y`
-  
-<br />
-
-### Haute Disponibilité du Cluster K3s
-
-#### Un cluster HA K3s avec etcd intégré est composé de :
-- Trois nœuds de serveur ou plus qui serviront l'API Kubernetes et exécuteront d'autres services de plan de contrôle, ainsi qu'hébergeront la banque de données etcd intégrée. 
-- Facultatif : zéro ou plusieurs nœuds d'agent désignés pour exécuter vos applications et services
-- Facultatif : une adresse d'enregistrement fixe (load balancer) pour que les nœuds d'agent / worker s'inscrivent auprès du cluster (Voir le projet : https://github.com/CrzGames/Crzgames_LoadBalancer_External)
-
-<br />
-
-### Get KUBECONFIG :
-1. Connect to the NODE MASTER in the Cluster K3S.
-2. Run command, copy kubeconfig : 
-```bash
-sudo cat /etc/rancher/k3s/k3s.yaml
-```
-3. Replace "127.0.0.1:6443" to " https://cluster-k3s.crzcommon.com:6443".
-4. Encode BASE64 and add in SECRETS VARIABLE for CI / CD, run command :
-```bash
-sudo base64 /etc/rancher/k3s/k3s.yaml > k3s_base64.txt 
-```
 
 <br /><br /><br /><br />
 
@@ -133,6 +110,31 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=stable sh -
 3. Check si la monté de version c'est bien fait :
 ```bash
 sudo kubectl get node -o wide
+```
+
+<br /><br /><br /><br />
+
+
+### Haute Disponibilité du Cluster K3s
+
+#### Un cluster HA K3s avec etcd intégré est composé de :
+- Trois nœuds de serveur ou plus qui serviront l'API Kubernetes et exécuteront d'autres services de plan de contrôle, ainsi qu'hébergeront la banque de données etcd intégrée. 
+- Facultatif : zéro ou plusieurs nœuds d'agent désignés pour exécuter vos applications et services
+- Facultatif : une adresse d'enregistrement fixe (load balancer) pour que les nœuds d'agent / worker s'inscrivent auprès du cluster (Voir le projet : https://github.com/CrzGames/Crzgames_LoadBalancer_External)
+
+<br /><br /><br /><br />
+
+
+### Get KUBECONFIG :
+1. Connect to the NODE MASTER in the Cluster K3S.
+2. Run command, copy kubeconfig : 
+```bash
+sudo cat /etc/rancher/k3s/k3s.yaml
+```
+3. Replace "127.0.0.1:6443" to " https://cluster-k3s.crzcommon.com:6443".
+4. Encode BASE64 and add in SECRETS VARIABLE for CI / CD, run command :
+```bash
+sudo base64 /etc/rancher/k3s/k3s.yaml > k3s_base64.txt 
 ```
 
 <br /><br /><br /><br />
