@@ -30,75 +30,6 @@ curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable traefik -
 <br /><br /><br /><br />
 
 
-## Mise à jour de la version Kubernetes sur les noeuds
-1. Se connecter sur un noeud.
-2. Run command : 
-```bash
-curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=stable sh -
-```
-3. Check si la monté de version c'est bien fait :
-```bash
-sudo kubectl get node -o wide
-```
-
-<br /><br /><br /><br />
-
-
-## Sauvegarde et Restauration du Cluster K3s
-### Par défault
-- K3s crée des `snapshots etcd automatiques`.
-- K3s crée les snapshots etcd automatique à `00h00` et `12h00`
-- K3s `conserve` les `5 derniers snapshots`.
-- K3s conserve les snapshots dans : `/var/lib/rancher/k3s/server/db/snapshots`.
-- Lorsque K3s est restauré à partir d'une sauvegarde, l'ancien répertoire de données (`/var/lib/rancher/k3s/server/db/snapshots`) est déplacé vers `/var/lib/rancher/k3s/server/db/etcd-old/`. K3s tente ensuite de restaurer l'instantané en créant un nouveau répertoire de données, puis en démarrant etcd avec un nouveau cluster K3s avec un membre etcd.
-
-### Configurer le nombre de snapshots conservés (à faire sur chaque noeud master)
-```bash
-# Ajoutez l'option '--etcd-snapshot-retention=10' à la ligne ExecStart :
-sudo nano /etc/systemd/system/k3s.service
-# Recharger le daemon systemd pour appliquer les modifications :
-sudo systemctl daemon-reload
-# Arreter et démarrer à nouveau K3s :
-sudo systemctl stop k3s
-sudo systemctl start k3s
-```
-
-### Création d'un Snapshot etcd Manuel
-```bash
-sudo k3s etcd-snapshot save
-# save is : /var/lib/rancher/k3s/server/db/snapshots
-```
-
-### Liste des Snapshots
-```bash
-sudo k3s etcd-snapshot ls
-```
-
-### Restaurer un Cluster K3s
-1. Sur le premier nœud (Server1), arrêter et démarrer K3s avec les options de réinitialisation du cluster :
-```bash
-sudo systemctl stop k3s
-sudo k3s server \
-  --cluster-reset \
-  --cluster-reset-restore-path=/var/lib/rancher/k3s/server/db/snapshots/mysnapshot
-```
-2. Sur les autres nœuds (Server2, Server3), arrêtez K3s et supprimez le répertoire de données :
-```bash
-sudo systemctl stop k3s
-sudo rm -rf /var/lib/rancher/k3s/server/db/
-```
-3. Sur le premier nœud (Sever1), redémarrez K3s :
-```bash
-sudo systemctl start k3s
-```
-4. Sur les autres nœuds (Server2, Server3), redémarrez K3s pour rejoindre le cluster restauré :
-```bash
-sudo systemctl start k3s
-```
-
-<br /><br /><br /><br />
-
-
 ## 📚 Documentation 
 
 ### Joindre de Nouveaux Nœuds au Cluster K3s
@@ -188,6 +119,75 @@ sudo cat /etc/rancher/k3s/k3s.yaml
 4. Encode BASE64 and add in SECRETS VARIABLE for CI / CD, run command :
 ```bash
 sudo base64 /etc/rancher/k3s/k3s.yaml > k3s_base64.txt 
+```
+
+<br /><br /><br /><br />
+
+
+## Mise à jour de la version Kubernetes sur les noeuds
+1. Se connecter sur un noeud.
+2. Run command : 
+```bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=stable sh -
+```
+3. Check si la monté de version c'est bien fait :
+```bash
+sudo kubectl get node -o wide
+```
+
+<br /><br /><br /><br />
+
+
+## Sauvegarde et Restauration du Cluster K3s
+### Par défault
+- K3s crée des `snapshots etcd automatiques`.
+- K3s crée les snapshots etcd automatique à `00h00` et `12h00`
+- K3s `conserve` les `5 derniers snapshots`.
+- K3s conserve les snapshots dans : `/var/lib/rancher/k3s/server/db/snapshots`.
+- Lorsque K3s est restauré à partir d'une sauvegarde, l'ancien répertoire de données (`/var/lib/rancher/k3s/server/db/snapshots`) est déplacé vers `/var/lib/rancher/k3s/server/db/etcd-old/`. K3s tente ensuite de restaurer l'instantané en créant un nouveau répertoire de données, puis en démarrant etcd avec un nouveau cluster K3s avec un membre etcd.
+
+### Configurer le nombre de snapshots conservés (à faire sur chaque noeud master)
+```bash
+# Ajoutez l'option '--etcd-snapshot-retention=10' à la ligne ExecStart :
+sudo nano /etc/systemd/system/k3s.service
+# Recharger le daemon systemd pour appliquer les modifications :
+sudo systemctl daemon-reload
+# Arreter et démarrer à nouveau K3s :
+sudo systemctl stop k3s
+sudo systemctl start k3s
+```
+
+### Création d'un Snapshot etcd Manuel
+```bash
+sudo k3s etcd-snapshot save
+# save is : /var/lib/rancher/k3s/server/db/snapshots
+```
+
+### Liste des Snapshots
+```bash
+sudo k3s etcd-snapshot ls
+```
+
+### Restaurer un Cluster K3s
+1. Sur le premier nœud (Server1), arrêter et démarrer K3s avec les options de réinitialisation du cluster :
+```bash
+sudo systemctl stop k3s
+sudo k3s server \
+  --cluster-reset \
+  --cluster-reset-restore-path=/var/lib/rancher/k3s/server/db/snapshots/mysnapshot
+```
+2. Sur les autres nœuds (Server2, Server3), arrêtez K3s et supprimez le répertoire de données :
+```bash
+sudo systemctl stop k3s
+sudo rm -rf /var/lib/rancher/k3s/server/db/
+```
+3. Sur le premier nœud (Sever1), redémarrez K3s :
+```bash
+sudo systemctl start k3s
+```
+4. Sur les autres nœuds (Server2, Server3), redémarrez K3s pour rejoindre le cluster restauré :
+```bash
+sudo systemctl start k3s
 ```
 
 <br /><br /><br /><br />
