@@ -207,8 +207,8 @@ Pour intégrer un nouveau projet dans notre pipeline CI/CD, suivez les étapes c
 
    Les secrets GitHub permettent de stocker et d'utiliser des données sensibles dans votre workflow de CI/CD de manière sécurisée. Pour la configuration initiale, assurez-vous d'ajouter les secrets suivants dans votre dépôt GitHub :
 
-   - `SSH_PRIVATE_KEY`: Votre clé privée SSH. Cette clé doit correspondre à la clé publique déjà installée sur les serveurs cibles.
-   - `SSH_HOSTS`: Les adresses IP des serveurs cibles, séparées par des espaces. <br />
+   - `CLUSTER_SSH_PRIVATE_KEY`: Votre clé privée SSH. Cette clé doit correspondre à la clé publique déjà installée sur les serveurs cibles.
+   - `CLUSTER_SSH_HOSTS`: Les adresses IP des serveurs cibles, séparées par des espaces. <br />
    Exemple : `192.0.2.1 198.51.100.2`. Ces adresses seront utilisées pour préparer le fichier `known_hosts`, facilitant ainsi des connexions SSH sécurisées.
    - `CLUSTER_K3S_TOKEN`: Token pour s'authentifier au près du cluster K3S, on peut le récupérer `via` un `noeud master` : <br />
     ```bash
@@ -217,4 +217,4 @@ Pour intégrer un nouveau projet dans notre pipeline CI/CD, suivez les étapes c
 
 3. **Ajout de la clé publique sur les serveurs cibles**:
 
-   Avant de pouvoir déployer automatiquement via CI/CD, la clé publique associée à `SSH_PRIVATE_KEY` doit être ajoutée au fichier `~/.ssh/authorized_keys` sur chaque serveur cible. Cette étape garantit que GitHub Actions peut se connecter aux serveurs via SSH sans intervention manuelle.
+   Avant de pouvoir déployer automatiquement via CI/CD, la clé publique associée à `CLUSTER_SSH_PRIVATE_KEY` doit être ajoutée au fichier `~/.ssh/authorized_keys` sur chaque serveur cible. Cette étape garantit que GitHub Actions peut se connecter aux serveurs via SSH sans intervention manuelle.
