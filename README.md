@@ -3,7 +3,7 @@
 ## 🛠 Tech Stack
 
 - **Ansible**: Automatise le déploiement des noeud master / worker sur les serveurs.
-- **CI/CD (GitHub Actions)**: Automatise le processus de test et de déploiement, rendant le lancement de nouvelles versions plus rapide et plus fiable.
+- **CI/CD (GitHub Actions)**: Automatise le processus de déploiement des noeuds worker / master.
 
 <br /><br /><br /><br />
 
