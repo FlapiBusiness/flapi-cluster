@@ -8,12 +8,14 @@
 <br /><br />
 
 
-## Création du Cluster K3s
+## 📚 Documentation 
 
-### 1. Connexion au VPS / Serveur Dédié
+### Création du Cluster K3s
+
+#### 1. Connexion au VPS / Serveur Dédié
 Connectez-vous à votre serveur qui servira de premier nœud master dans votre cluster K3s.
 
-### 2. Création et Initialisation du Premier Nœud Master
+#### 2. Création et Initialisation du Premier Nœud Master
 1. Exécutez la commande suivante pour initialiser le cluster K3s et créer le premier nœud master :
 ```bash
 curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable traefik --node-taint CriticalAddonsOnly=true:NoExecute --tls-san cluster-k3s.crzcommon.com
@@ -26,11 +28,8 @@ curl -sfL https://get.k3s.io | sh -s - server --cluster-init --disable traefik -
 - `--disable traefik` : Désactive l'installation automatique de Traefik, qui est l'ingress controller par défaut inclus avec K3s. Vous pouvez choisir de désactiver Traefik si vous prévoyez d'utiliser un autre ingress controller ou si vous n'avez pas besoin de cette fonctionnalité.
 - `--node-taint CriticalAddonsOnly=true:NoExecute` : Applique un taint au nœud serveur, ce qui empêche les pods qui n'ont pas de tolérance correspondante d'être planifiés sur ce nœud. Ce taint est souvent utilisé pour s'assurer que seuls les pods critiques pour le fonctionnement du cluster soient exécutés sur les nœuds serveur, aidant à garder ces nœuds stables et sécurisés.
 - `--tls-san cluster-k3s.crzcommon.com` : Ajoute un Subject Alternative Name (SAN) au certificat TLS généré pour l'API server de Kubernetes. Cela permet d'accéder en toute sécurité à l'API server via le nom de domaine spécifié (cluster-k3s.crzcommon.com dans cet exemple), en plus de son adresse IP. C'est crucial pour les environnements où vous accédez à l'API server de Kubernetes à travers un réseau ou Internet.
-  
-<br /><br /><br /><br />
 
-
-## 📚 Documentation 
+<br />
 
 ### Joindre de Nouveaux Nœuds au Cluster K3s
 
